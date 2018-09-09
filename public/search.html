@@ -1,0 +1,207 @@
+<html>
+<head>
+    <title>Search</title>
+</head>
+<link href="https://fonts.googleapis.com/css?family=Merriweather" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/5.2.0/firebase.js"></script>
+
+<script>
+
+      // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyAjHq7O7dNJlCNcal30HleDgeIaaZ2sUHU",
+    authDomain: "aruba-9b036.firebaseapp.com",
+    databaseURL: "https://aruba-9b036.firebaseio.com",
+    projectId: "aruba-9b036",
+    storageBucket: "aruba-9b036.appspot.com",
+    messagingSenderId: "1049117972776"
+  };
+  firebase.initializeApp(config);
+</script>
+
+<body>
+
+        <div class="navbar">
+                <h1>Aruba</h1>
+        </div>
+
+        <div class="intro">
+                <p class="message">JOIN A ROOM</p>
+                <input type="text" id="joinRoomBar" placeholder="Pin" maxlength="4"/>
+                <br>
+                <button class="button button5" onclick="post()">Go!</button>
+                <br>
+                <br>
+                <a href="createRoom.html">Create a room</a>
+        
+                <button onclick="joinGroup()">Join</button>
+
+                <button onclick="suggest()">Suggest</button>
+        </div>
+
+</body>
+<script>
+    async function joinGroup(){
+
+        var userProvidedPin = document.getElementById('joinRoomBar').value; //Get pin from user
+
+        alert(userProvidedPin); //Display pin for testing purposes
+        //will have to replace 2 with number of groups
+        var foundGroup = false;
+        for(var i = 1; i <7; i++){
+            alert('group'+i +" found:" +foundGroup);
+            
+            await firebase.database().ref("group"+i).once('value').then(function(snapshot){
+                var groupXpin = (snapshot.val() && snapshot.val().pin);
+                alert("I:" +i+" "+"INSIDE CALL GXP:"+groupXpin);
+                
+                if(userProvidedPin === groupXpin){
+                    alert("group"+i+" XPIN: "+groupXpin +" UPIN"+userProvidedPin);
+                    alert("You were added to group"+i);
+                    foundGroup = true;
+                    
+                }
+            });
+
+            if(foundGroup===true){
+                break;
+            }
+        }
+
+        if(foundGroup == false){
+            alert("Could not find group. Try a different pin.");
+        }
+    /*
+        var db = firebase.database();
+        //USER2 WILL BE PASSED INTO THE SET
+        db.ref('group1/user4').set({
+            admin :'No',
+            id:'432',
+        });
+        */
+    }
+    function suggest(){
+        var db = firebase.database();
+
+        db.ref('group1/suggestions/track1').set({
+            counter : 1,
+        });
+
+        
+    firebase.database().ref('group1').once('value').then(function(snapshot) {
+        var pin = (snapshot.val() && snapshot.val().pin) || 'Anonymous';
+        alert(pin);
+    });
+    }
+    function post(){
+
+        var db = firebase.database();
+
+            db.ref('group4').set({
+                pin: "3333",
+            });
+
+            db.ref('group4/user1').set({
+                admin : "Yes",
+                id: '123',
+            });
+            db.ref('group4/suggestions/track').set({
+                counter :'1',
+            });
+            
+           
+
+    }
+
+</script>
+<style>
+ 
+a{
+    color: white;
+    text-decoration: none;
+    font-size: 20px;
+}
+#joinRoomBar{
+    border: 6px solid #ccc;
+    border-radius: 50px;
+    line-height: 50px;
+    font-size: 30px;
+    width: 90px;
+
+}
+#joinRoomBar:focus {
+    border: 6px solid #555;
+    outline:0;
+}
+.navbar {
+  overflow: hidden;
+
+  position: fixed;
+  top: 0;
+  height: 100px;
+  width: 100%;
+}
+
+.navbar h1 {
+  float: left;
+  display: block;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 40px;
+}
+
+
+  body{
+    font-family: 'Merriweather', serif;
+    background-color: black;
+    color: white;
+    background-image: url("danny-howe-365401-unsplash.jpg");
+    background-size: cover;
+    margin:0;
+
+  }
+
+ .button {
+ 
+    border: none;
+    color: white;
+
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 30px;
+    margin: 4px;
+    width: 75px;
+
+    height: 60px;
+    border-radius: 40px;
+    cursor: pointer;
+    background-color: #555555;
+}
+  p.message {
+    position :relative;
+    color: white;
+    font-size: 40px;
+  
+}
+div.intro{
+  text-align: center;
+
+  width: 100%;
+margin-top: 20%;
+  height: 100px;
+
+
+}
+/* Standard syntax */
+@keyframes mymove {
+    from {bottom: 0px;}
+    to {bottom: 200px;}
+}
+</style>
+<script src="search.js"></script>
+
+
+</html>
